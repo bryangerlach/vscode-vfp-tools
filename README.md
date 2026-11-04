@@ -5,6 +5,19 @@ A Visual FoxPro extension for VSCodium and Visual Studio Code. It gives the `.pr
 indenting they need, and it turns the binary files of a project into readable
 text and back again.
 
+## Installing it
+
+Build a `.vsix` and install it, or install the packaged file if a release has
+one:
+
+```
+npm install
+npx vsce package --skip-license
+codium --install-extension vfp-tools-<version>.vsix
+```
+
+`code --install-extension` does the same in Visual Studio Code.
+
 ## What it does
 
 | Command | What it does |
@@ -333,12 +346,22 @@ marker either, so it never shows up as work that has to be done.
 ## Building it
 
 ```
+git clone https://github.com/bryangerlach/vscode-vfp-tools
+cd vscode-vfp-tools
 npm install
 npm run compile
 ```
 
 The extension is in `out/`. To try it, open this folder in VSCodium and press
 F5, or package it with `vsce`.
+
+To build a `.vsix` you can install:
+
+```
+npx vsce package --skip-license
+```
+
+and then install it with `codium --install-extension vfp-tools-<version>.vsix`.
 
 ## The tests
 

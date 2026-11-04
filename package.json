@@ -6,6 +6,14 @@
   "publisher": "vfptools",
   "author": "VFP Tools contributors",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bryangerlach/vscode-vfp-tools"
+  },
+  "homepage": "https://github.com/bryangerlach/vscode-vfp-tools#readme",
+  "bugs": {
+    "url": "https://github.com/bryangerlach/vscode-vfp-tools/issues"
+  },
   "engines": {
     "vscode": "^1.75.0"
   },
