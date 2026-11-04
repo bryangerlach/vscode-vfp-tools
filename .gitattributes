@@ -1,0 +1,6 @@
+*.sc2 text eol=crlf
+*.vc2 text eol=crlf
+*.fr2 text eol=crlf
+*.mn2 text eol=crlf
+*.lb2 text eol=crlf
+*.pj2 text eol=crlf

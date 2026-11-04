@@ -1,0 +1,436 @@
+{
+  "name": "vfp-tools",
+  "displayName": "Visual FoxPro Tools",
+  "description": "Syntax highlighting for Visual FoxPro, and the tools to turn the binary files of a project into readable text and back again.",
+  "version": "1.6.1",
+  "publisher": "vfptools",
+  "author": "VFP Tools contributors",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters",
+    "Other"
+  ],
+  "keywords": [
+    "visual foxpro",
+    "vfp",
+    "foxpro",
+    "xbase",
+    "dbf",
+    "sc2",
+    "foxbin2prg"
+  ],
+  "activationEvents": [
+    "onLanguage:vfp",
+    "onCommand:vfp.previewForm",
+    "onCommand:vfp.togglePreview",
+    "onCustomEditor:vfp.formPreview",
+    "workspaceContains:**/*.prg",
+    "workspaceContains:**/*.sc2",
+    "workspaceContains:**/*.vc2",
+    "workspaceContains:**/*.fr2",
+    "workspaceContains:**/*.pj2"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "vfp",
+        "aliases": [
+          "Visual FoxPro",
+          "FoxPro",
+          "vfp"
+        ],
+        "extensions": [
+          ".prg",
+          ".sc2",
+          ".vc2",
+          ".fr2",
+          ".mn2",
+          ".lb2",
+          ".pj2",
+          ".qpr",
+          ".mnx",
+          ".scx",
+          ".vcx",
+          ".frx",
+          ".lbx",
+          ".pjx"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "vfp",
+        "scopeName": "source.vfp",
+        "path": "./syntaxes/vfp.tmLanguage.json"
+      }
+    ],
+    "customEditors": [
+      {
+        "viewType": "vfp.formPreview",
+        "displayName": "VFP Form Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.sc2"
+          },
+          {
+            "filenamePattern": "*.SC2"
+          },
+          {
+            "filenamePattern": "*.vc2"
+          },
+          {
+            "filenamePattern": "*.VC2"
+          }
+        ],
+        "priority": "option"
+      }
+    ],
+    "commands": [
+      {
+        "command": "vfp.menu",
+        "title": "Open the menu",
+        "category": "VFP",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "vfp.buildProject",
+        "title": "Build the project",
+        "category": "VFP",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "vfp.rebuildBinaries",
+        "title": "Rebuild the binary files from the text files",
+        "category": "VFP",
+        "icon": "$(file-binary)"
+      },
+      {
+        "command": "vfp.rebuildText",
+        "title": "Rebuild the text files from the binary files",
+        "category": "VFP",
+        "icon": "$(file-text)"
+      },
+      {
+        "command": "vfp.syncProject",
+        "title": "Bring the binary files in step with the text files",
+        "category": "VFP",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "vfp.resolveAll",
+        "title": "Put everything in step",
+        "category": "VFP",
+        "icon": "$(check-all)"
+      },
+      {
+        "command": "vfp.checkProject",
+        "title": "Show what is out of step",
+        "category": "VFP",
+        "icon": "$(check)"
+      },
+      {
+        "command": "vfp.openInIde",
+        "title": "Open in the Visual FoxPro IDE",
+        "category": "VFP",
+        "icon": "$(window)"
+      },
+      {
+        "command": "vfp.previewForm",
+        "title": "Preview the form",
+        "category": "VFP",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "vfp.togglePreview",
+        "title": "Show or hide the form preview",
+        "category": "VFP",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "vfp.rebuildOne",
+        "title": "Build the binary file of this text file",
+        "category": "VFP",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "vfp.refreshOne",
+        "title": "Make the text file of this binary file again",
+        "category": "VFP"
+      },
+      {
+        "command": "vfp.selectBuildProgram",
+        "title": "Choose the program that builds the project",
+        "category": "VFP"
+      },
+      {
+        "command": "vfp.selectFoxBin2Prg",
+        "title": "Choose the FoxBin2Prg program",
+        "category": "VFP"
+      },
+      {
+        "command": "vfp.editIgnore",
+        "title": "Edit the exclude list (.vfpignore)",
+        "category": "VFP",
+        "icon": "$(circle-slash)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vfp",
+          "title": "Visual FoxPro",
+          "icon": "resources/vfp.svg"
+        }
+      ]
+    },
+    "views": {
+      "vfp": [
+        {
+          "id": "vfp.files",
+          "name": "The files of the project",
+          "contextualTitle": "Visual FoxPro"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "vfp.files",
+        "contents": "No Visual FoxPro project was found in this workspace.\n[Choose the project file](command:vfp.selectProjectFile)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "vfp.openInIde",
+          "when": "resourceExtname =~ /^\\.(prg|sc2|vc2|fr2|mn2|lb2|pj2)$/i"
+        },
+        {
+          "command": "vfp.rebuildOne",
+          "when": "false"
+        },
+        {
+          "command": "vfp.refreshOne",
+          "when": "false"
+        },
+        {
+          "command": "vfp.previewForm"
+        },
+        {
+          "command": "vfp.togglePreview"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "vfp.menu",
+          "group": "navigation@1",
+          "when": "view == vfp.files"
+        },
+        {
+          "command": "vfp.resolveAll",
+          "group": "navigation@2",
+          "when": "view == vfp.files"
+        },
+        {
+          "command": "vfp.syncProject",
+          "group": "navigation@3",
+          "when": "view == vfp.files"
+        },
+        {
+          "command": "vfp.buildProject",
+          "group": "navigation@4",
+          "when": "view == vfp.files"
+        },
+        {
+          "command": "vfp.checkProject",
+          "group": "1_vfp@1",
+          "when": "view == vfp.files"
+        },
+        {
+          "command": "vfp.rebuildBinaries",
+          "group": "1_vfp@2",
+          "when": "view == vfp.files"
+        },
+        {
+          "command": "vfp.rebuildText",
+          "group": "1_vfp@3",
+          "when": "view == vfp.files"
+        },
+        {
+          "command": "vfp.editIgnore",
+          "group": "1_vfp@4",
+          "when": "view == vfp.files"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vfp.rebuildOne",
+          "group": "1_vfp@1",
+          "when": "view == vfp.files && viewItem == vfp:build"
+        },
+        {
+          "command": "vfp.refreshOne",
+          "group": "1_vfp@1",
+          "when": "view == vfp.files && viewItem == vfp:refresh"
+        },
+        {
+          "command": "vfp.openInIde",
+          "group": "1_vfp@3",
+          "when": "view == vfp.files && viewItem =~ /^vfp:(build|refresh|step)$/"
+        },
+        {
+          "command": "vfp.previewForm",
+          "group": "1_vfp@2",
+          "when": "view == vfp.files && viewItem =~ /^vfp:(build|refresh|step|notext)$/"
+        },
+        {
+          "command": "vfp.previewForm",
+          "group": "inline@1",
+          "when": "view == vfp.files && viewItem =~ /^vfp:(build|refresh|step|notext)$/"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "vfp.togglePreview",
+          "group": "navigation@1",
+          "when": "resourceExtname =~ /^\\.(sc2|vc2)$/i"
+        },
+        {
+          "command": "vfp.openInIde",
+          "group": "navigation@2",
+          "when": "resourceExtname =~ /^\\.(prg|sc2|vc2|fr2|mn2|lb2|pj2)$/i"
+        },
+        {
+          "command": "vfp.rebuildOne",
+          "group": "navigation@3",
+          "when": "resourceExtname =~ /^\\.(sc2|vc2|fr2|mn2|lb2|pj2)$/i"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "vfp.rebuildOne",
+          "group": "vfp@1",
+          "when": "resourceExtname =~ /^\\.(sc2|vc2|fr2|mn2|lb2|pj2)$/i"
+        },
+        {
+          "command": "vfp.refreshOne",
+          "group": "vfp@2",
+          "when": "resourceExtname =~ /^\\.(scx|vcx|frx|mnx|lbx|pjx)$/i"
+        },
+        {
+          "command": "vfp.previewForm",
+          "group": "vfp@3",
+          "when": "resourceExtname =~ /^\\.(sc2|vc2)$/i"
+        },
+        {
+          "command": "vfp.openInIde",
+          "group": "vfp@4",
+          "when": "resourceExtname =~ /^\\.(prg|sc2|vc2|fr2|mn2|lb2|pj2)$/i"
+        },
+        {
+          "command": "vfp.resolveAll",
+          "group": "vfp@5"
+        },
+        {
+          "command": "vfp.syncProject",
+          "group": "vfp@6"
+        },
+        {
+          "command": "vfp.buildProject",
+          "group": "vfp@7"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "vfp.rebuildOne",
+          "group": "vfp@1",
+          "when": "resourceExtname =~ /^\\.(sc2|vc2|fr2|mn2|lb2|pj2)$/i"
+        },
+        {
+          "command": "vfp.refreshOne",
+          "group": "vfp@2",
+          "when": "resourceExtname =~ /^\\.(scx|vcx|frx|mnx|lbx|pjx)$/i"
+        },
+        {
+          "command": "vfp.previewForm",
+          "group": "vfp@3",
+          "when": "resourceExtname =~ /^\\.(sc2|vc2)$/i"
+        },
+        {
+          "command": "vfp.openInIde",
+          "group": "vfp@4",
+          "when": "resourceExtname =~ /^\\.(prg|sc2|vc2|fr2|mn2|lb2|pj2)$/i"
+        },
+        {
+          "command": "vfp.resolveAll",
+          "group": "vfp@5"
+        },
+        {
+          "command": "vfp.syncProject",
+          "group": "vfp@6"
+        },
+        {
+          "command": "vfp.buildProject",
+          "group": "vfp@7"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "vfp.togglePreview",
+        "key": "ctrl+k v",
+        "when": "resourceExtname =~ /^\\.(sc2|vc2)$/i"
+      }
+    ],
+    "configuration": {
+      "title": "Visual FoxPro Tools",
+      "properties": {
+        "vfp.foxbin2prg": {
+          "type": "string",
+          "default": "",
+          "description": "The path of foxbin2prg.exe. It is looked for in the project folder when this is empty."
+        },
+        "vfp.buildProgram": {
+          "type": "string",
+          "default": "",
+          "description": "The Visual FoxPro program that builds the project, for example progs\\build_it.prg."
+        },
+        "vfp.projectFile": {
+          "type": "string",
+          "default": "",
+          "description": "The project file of the workspace, for example myproject.pjx. It is looked for when this is empty."
+        },
+        "vfp.vfpExe": {
+          "type": "string",
+          "default": "",
+          "description": "The path of the Visual FoxPro program, for example VFPA.EXE. It is looked for when this is empty."
+        },
+        "vfp.buildOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Build the binary file of a text file again when the text file is saved."
+        },
+        "vfp.showStatus": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show what is out of step in the status bar."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.3.0"
+  }
+}

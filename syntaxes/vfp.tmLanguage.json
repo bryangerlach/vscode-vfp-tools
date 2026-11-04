@@ -1,0 +1,131 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Visual FoxPro",
+  "scopeName": "source.vfp",
+  "fileTypes": [
+    "prg",
+    "sc2",
+    "vc2",
+    "fr2",
+    "mn2",
+    "lb2",
+    "pj2"
+  ],
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#directive"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#number"
+    },
+    {
+      "include": "#operator"
+    },
+    {
+      "include": "#keyword"
+    },
+    {
+      "include": "#builtin"
+    },
+    {
+      "include": "#systemvariable"
+    },
+    {
+      "include": "#property"
+    },
+    {
+      "include": "#identifier"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.vfp",
+      "match": "^\\s*\\*.*$"
+    },
+    "directive": {
+      "name": "meta.preprocessor.vfp",
+      "begin": "^\\s*(#)(?i)(include|define|if|ifdef|ifndef|else|endif|insert|command|translate)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.directive.vfp"
+        }
+      },
+      "end": "$",
+      "patterns": [
+        {
+          "include": "#string"
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.vfp",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "match": "\"\"",
+              "name": "constant.character.escape.vfp"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.vfp",
+          "begin": "'",
+          "end": "'"
+        }
+      ]
+    },
+    "number": {
+      "patterns": [
+        {
+          "name": "constant.numeric.hex.vfp",
+          "match": "\\b0[xX][0-9a-fA-F]+\\b"
+        },
+        {
+          "name": "constant.numeric.vfp",
+          "match": "\\b\\d+(\\.\\d+)?([eE][-+]?\\d+)?\\b"
+        }
+      ]
+    },
+    "operator": {
+      "name": "keyword.operator.vfp",
+      "match": "(\\+|-|\\*|/|\\^|\\$|\\.|,|:|;|<>|<=|>=|<|>|=|#|%|\\?|!|&)"
+    },
+    "keyword": {
+      "patterns": [
+        {
+          "name": "keyword.control.vfp",
+          "match": "(?i)\\b(IF|ELSE|ELIF|ENDIF|ENDCASE|CASE|OTHERWISE|ENDDO|DO|WHILE|ENDWHILE|LOOP|EXIT|RETURN|TRY|CATCH|ENDTRY|THROW|RETRY|SCAN|ENDSCAN|NEXT|CONTAIN|RECCOUNT|ENDCASE|BEGIN|END)\\b"
+        },
+        {
+          "name": "keyword.other.vfp",
+          "match": "(?i)\\b(ACCEPT|APPEND|BACKUP|BROWSE|CALCULATE|CALL|CANCEL|CASE|CHANGEPROJECT|CHDIR|CLEAR|CLOSE|CLOSETABLES|COMMIT|COPY|CREATE|DEBUG|DECLARE|DEFINE|DELETE|DIR|DIRECTORY|DISPLAY|DO|EDIT|ERASE|EXPORT|FILE|FLUSH|FOR|FUNCTION|GET|GOTO|IMPORT|INDEX|INSERT|LIST|LOCK|MODIFY|NOTE|ON|OPEN|ORDER|OUTTYPE|PLAY|PROCEDURE|READ|RECALL|RECOVER|RELEASE|REMOVE|RENAME|REPLACE|REPORT|RESTORE|RUN|SET|SCAN|SKIP|SORT|SQL|STORE|STRUCTURE|SUM|TOTAL|TRANSACTION|TRIGGER|UNLOCK|USE|VALIDATE|WAIT|WHERE|WHILE|WITH|WORK|WRITE|ZAP|APPEND|BLANK|CHANGE|CLASS|ENDCLASS|ENDDEFINE|ENDSFOR|ENDFOR|ENDPROC|ENDFUNC|DEFINE|ENDPROC|PUBLIC|PRIVATE|LOCAL|PARAMETERS|EXTERNAL|SCOPE|NOSCREEN|NOWAIT|NOSHOW|NOPROJECTHOOK|RECOMPILE|STRICT|HALT|ERROR|BREAK|CONSOLE|EXCLUSIVE|SHARED|OPTIMIZE|CODEPAGE|ASCII|CODEPAGE|MEMORY|MEMVAR|NOMENU|NOTITLE|SAVETEXT|NUMOFF|DATEFORM|STRICT|TOGGLE|INKEY|WAIT|MESSAGEBOX|GETFILE|GETFOLDER|PUTFILE|GETCOLOR|CHOOSECOLOR|CHDIR|FILE|ADIR|ASC|ATCCODE|CHR|EVAL|EVALUATE|EXECUTE|GETENV|SYS|VERSION|DATETIME|DATE|TIME|VAL|STR|STRTRAN|TRANSFORM|ALLTRIM|TRIM|LTRIM|RTRIM|LEFT|RIGHT|SUBSTR|REPLICATE|PADL|PADR|REPLICATE|SPACE|IIF|IIF\\(|NVL|COALESCE|EMPTY|ISNULL|ISDIGIT|ISALPHA|ISLOWER|ISUPPER|LOWER|UPPER|PROPER|GETWORDNUM|GETWORDCOUNT|ATC|LIKE|ROUND|INT|MOD|ABS|CEILING|FLOOR|PI|SQRT|EXP|LOG|LN|SIN|COS|TAN|ASIN|ACOS|ATAN|ATN2)\\b"
+        }
+      ]
+    },
+    "builtin": {
+      "name": "support.function.vfp",
+      "match": "(?i)\\b(ACOS|ASIN|ATAN|ATN2|CDATE|CHR|CTOD|CTOT|DATE|DATETIME|DAY|DTOS|DTOT|ERROR|EVAL|EVALUATE|EXP|GETENV|HOUR|INT|ISALPHA|ISDIGIT|ISLOWER|ISUPPER|ISNULL|JULIAN|LASTKEY|LCASE|LEFT|LEN|LOG|LTRIM|LOWER|MINUTE|MOD|MONTH|OCCURS|RIGHT|ROUND|RSET|SECOND|STR|STUFF|SUBSTR|TIME|TRANSFORM|TRIM|TTOC|TYPE|UPPER|VAL|YEAR|ASC|ATC|CHRSAW|GETWORDCOUNT|GETWORDNUM|LIKE|SYS|VERSION|MAKEY|GETFILE|GETFOLDER|ADIR|FILE)\\b"
+    },
+    "systemvariable": {
+      "name": "variable.language.vfp",
+      "match": "(?i)\\b(_ALIAS|_BEGINDATA|_CLIENT|_CPU|_DBC|_DEBUG|_DMY|_DO|_DOH|_DTR|_DTP|_DTO|_EDT|_FAIL|_FIO|_HST|_JOURNAL|_LAST|_MSG|_NOLOG|_ORDER|_PAD|_PAGENO|_PID|_PWD|_RCD|_RDD|_RDE|_READONLY|_RECCOUNT|_RECCOUNT|_RELATION|_SCOOP|_SPEED|_TALLY|_TXT|_VARNAME|_VFP|_VISLEVEL|_WALRUS|_WSOCK|_SCREEN|_SERVER|_SEND|_SOCKET|_ASP|_TASK|_OBJECT|_OLE|_SITE|_BATCH|_CGI|_WEB|_XML|_PREFETCH|_RETRY|_AUTOCOMMIT|_IDLCONVERT)\\b"
+    },
+    "property": {
+      "name": "variable.other.property.vfp",
+      "match": "(?i)\\b(ALIGN|ALLOWBUTTONBAR|ALLOWINSERT|ANCHOR|AUTOCENTER|AUTOSIZE|BACKCOLOR|BACKSTYLE|BORDERSTYLE|BORDERWIDTH|BUFFER|CAPTION|CLASS|CLICK|CLOSEWITH|COLOR| COLUMNCOUNT|CONTROLCOUNT|CREATE|CURRENT|DATASOURCE|DEFAULT|DELETE|DEPENDSON|DISABLE|DRAGDROP|EDITABLE|ENABLED|EXCLUSIVE|FIELDS|FILTER|FONTBOLD|FONTITALIC|FONTNAME|FONTSIZE|FORECOLOR|HEIGHT|HIDE|HINT|INDEX|INTEGRAL|KEY|KEYLABEL|LASTKEY|LEFT|LINKTEXT|LOB|MAXIMUM|MINIMUM|MOUSEPOINTER|NAME|NOSHOW|OLECONTROL|OPEN|ORDER|PAD|PARENT|PICTURE|PRINTERPROMPT|READONLY|REFRESH|REPORT|REQUIRED|RESIZABLE|ROWHEIGHT|ROWLEVEL|SCROLLBARS|SELECTED|SHOW|SPELLCHECK|SOURCE|SOURCETEXT|STATUSBAR|STRETCH|TABSTOP|TAG|TAGCOUNT|TARGET|TEXT|TOP|TOOLTIP|TRIGGER|UNIQUE|VALUE|VISIBLE|WHEN|WIDTH|WINDOWSTATE|WORDWRAP)\\b"
+    },
+    "identifier": {
+      "name": "variable.other.vfp",
+      "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "comments": {
+    "lineComment": "&&"
+  },
+  "brackets": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"]
+  ],
+  "autoClosingPairs": [
+    { "open": "{", "close": "}" },
+    { "open": "[", "close": "]" },
+    { "open": "(", "close": ")" },
+    { "open": "\"", "close": "\"", "notIn": ["string", "comment"] },
+    { "open": "'", "close": "'", "notIn": ["string", "comment"] }
+  ],
+  "surroundingPairs": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
+    ["\"", "\""],
+    ["'", "'"]
+  ],
+  "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
+  "indentationRules": {
+    "increaseIndentPattern": "^\\s*(IF|ELSE|DO CASE|CASE|FOR|WHILE|DO|TRY|PROCEDURE|FUNCTION|DEFINE CLASS|SCAN|REPEAT)\\b.*$",
+    "decreaseIndentPattern": "^\\s*(ENDIF|ENDCASE|ENDFOR|ENDWHILE|ENDDO|ENDTRY|ENDPROC|ENDFUNC|ENDCLASS|ENDSCAN|ENDREPEAT)\\b.*$"
+  },
+  "onEnterRules": [
+    {
+      "beforeText": "^\\s*(?i)(IF|ELSE|ELIF|ELSEIF)\\b.*\\bTHEN\\s*$",
+      "action": { "indent": "indent" }
+    },
+    {
+      "beforeText": "^\\s*(?i)(DO CASE|CASE)\\b.*$",
+      "action": { "indent": "indent" }
+    },
+    {
+      "beforeText": "^\\s*(?i)(FOR|WHILE|SCAN|REPEAT)\\b.*$",
+      "action": { "indent": "indent" }
+    },
+    {
+      "beforeText": "^\\s*(?i)(PROCEDURE|FUNCTION|DEFINE CLASS)\\b.*$",
+      "action": { "indent": "indent" }
+    }
+  ]
+}
