@@ -1,10 +1,9 @@
 // Checks the marker that says which side of a text/binary pair changed.
 //
-// The marker is the contract between the extension and the Visual FoxPro
-// bridge: both write the same file, so both have to read the same states.
-// This test is self-contained; it makes a pair of files in a temporary folder.
+// This test is self-contained; it makes a pair of files in a temporary folder
+// and marks them the way the extension does.
 import { createRequire } from "node:module"
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { basename, join } from "node:path"
 
@@ -12,6 +11,10 @@ const require = createRequire(import.meta.url)
 const { markerFile, markPair, readMarker, stateOf } = require("../out/marker.js")
 
 const root = mkdtempSync(join(tmpdir(), "vfp-marker-"))
+// The marker is kept under LOCALAPPDATA, so point that at the scratch folder
+// and leave the real one alone.
+const local = join(root, "local")
+process.env.LOCALAPPDATA = local
 const marker = join(root, "sync_test.txt")
 const text = join(root, "frm_test.SC2")
 const binary = join(root, "frm_test.scx")
@@ -66,6 +69,16 @@ same(
   basename(markerFile(join(root, "myproject.pjx"))),
   "sync_myproject_pjx.txt",
 )
+
+// A marker that is still in the folder the extension used before is picked up,
+// so a project that was marked then is not marked all over again.
+const oldFolder = join(local, "opencode", "vfp")
+mkdirSync(oldFolder, { recursive: true })
+writeFileSync(join(oldFolder, "sync_legacy_pjx.txt"), "an old mark\r\n", "latin1")
+const moved = markerFile(join(root, "legacy.pjx"))
+same("a marker is moved out of the old folder", existsSync(moved), true)
+same("and it keeps what it said", readFileSync(moved, "utf8"), "an old mark\r\n")
+same("the new folder is the extension's own", basename(join(moved, "..")), "vfp-tools")
 
 rmSync(root, { recursive: true, force: true })
 

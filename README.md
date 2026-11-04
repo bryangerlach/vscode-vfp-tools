@@ -63,15 +63,6 @@ A `.scx` file is binary and cannot be read by an editor. The `.SC2` file next to
 it holds the same thing as text, and the text is the master: the binary file
 is the build, and it is made again from the text.
 
-```
-you:     "look at frm_customer and tell me what the Height is"
-opencode: opens the .scx as text, and reads the .SC2
-you:     "make the Height 600"
-opencode: changes the .SC2
-you:     "that is all"
-opencode: closes the file, so the .scx is built again from the .SC2
-```
-
 So the work goes like this:
 
 1. The file is opened as text when it is needed.
@@ -93,7 +84,7 @@ So there is a **marker file** that holds the size and the time of both files
 of every pair, as they were the last time the two were seen together:
 
 ```
-%LOCALAPPDATA%\opencode\vfp\sync_myproject_pjx.txt
+%LOCALAPPDATA%\vfp-tools\sync_myproject_pjx.txt
 ```
 
 * The text file is not the mark it was → the text was changed, and the binary
@@ -105,14 +96,9 @@ of every pair, as they were the last time the two were seen together:
 A file **without a text file** is the fourth case: it has never been turned into
 text at all.
 
-The bridge on the Visual FoxPro side writes the same file, so the two know
-what the other did. Two things about this Visual FoxPro are worth knowing, and
-both are easy to get wrong:
-
-* `DTOS()` gives the day as `YYYYMMDD`, without the dashes.
-* `ADIR()` gives the time of a file rounded **up to the next even second**.
-
-The extension does the same, so the two always agree.
+The time is rounded **up to the next even second**, the way Visual FoxPro
+records file times, so the mark does not change with the part of a second that
+the file system adds, and the day is written as `YYYYMMDD`, without the dashes.
 
 ## When a lot of files are out of step
 
@@ -308,14 +294,6 @@ empty by then, and it is in the temporary folder. The removal waits for the
 hold to be let go of, in the background so that the window keeps answering,
 and a folder that still will not go is left for a later run to sweep up.
 
-## The Visual FoxPro side
-
-The bridge that runs inside the Visual FoxPro IDE and the OpenCode plugin are a
-separate project, `vfp-opencode`. The extension does not need it. When both are
-used, they share the marker file, the session open-files list and the
-`.vfpignore` rules, so a file that one side leaves alone is left alone by the
-other as well.
-
 ## The files that are left alone
 
 Some files are never edited by hand, so there is no reason to turn them into
@@ -332,10 +310,10 @@ forms/frm_keep.*           this one is left alone...
 !forms/frm_keep.scx        ...but this one is used
 ```
 
-The same file is read by the OpenCode plugin and by the bridge, so a file that
-is on the list is left alone by all three of them. The rules are the
-`.gitignore` ones, and they are written down in the file itself by **VFP: Edit
-the exclude list**, which makes the file if it is not there yet.
+The list is read by every command that converts a file, so a file that is on it
+is left alone by all of them. The rules are the `.gitignore` ones, and they are
+written down in the file itself by **VFP: Edit the exclude list**, which makes
+the file if it is not there yet.
 
 A file that is left alone is not turned into text, and its text file is not
 built back into it. In the panel it is greyed out, with a dash for an icon and
@@ -385,17 +363,11 @@ node test/preview.mjs       && does the preview pane follow the form that is bei
 node test/goto.mjs          && does a name go to its code: DO, SET PROCEDURE,
                               DO FORM, THISFORM and THIS, in the form and in a
                               class library?
-node test/ignore.mjs        && do the extension, the plugin and the bridge agree
-                              about which files .vfpignore leaves alone?
-node test/ignore-many.mjs  && does the bridge walk a folder with many files,
-                              and leave out the ones .vfpignore names?
+node test/ignore.mjs        && does the extension leave alone every file that
+                              .vfpignore names, and only those?
 node test/installed.mjs     && is the extension in place, with all of its
                               commands and its grammar?
 ```
-
-`ignore.mjs` and `ignore-many.mjs` use the `vfp-opencode` project when it is
-next to this one, or when `VFP_OPENCODE_HOME` points at it. Without it, the
-extension's own rules are checked and the bridge part is skipped.
 
 `memo-pair.mjs` is opt-in because it needs a real form: set
 `VFP_SAMPLE_PROJECT` to a Visual FoxPro project folder. It only reads the

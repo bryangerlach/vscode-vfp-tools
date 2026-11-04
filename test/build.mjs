@@ -15,7 +15,7 @@ const { findVfp, runProgram } = require("../out/vfp.js")
 const vfp = findVfp("")
 console.log("the Visual FoxPro:", vfp ?? "not found")
 
-const root = join(tmpdir(), "opencode", "buildtest")
+const root = join(tmpdir(), "vfp-tools", "buildtest")
 rmSync(root, { recursive: true, force: true })
 mkdirSync(root, { recursive: true })
 

@@ -11,8 +11,8 @@ import { stampOf } from "./foxbin"
  * text, its text file is not turned back into it, and the panel says so.
  *
  * The list is one pattern a line, in a file called `.vfpignore` in the project
- * folder, next to the `.pjx`. All three of the things that convert files read
- * it: the extension, the OpenCode plugin and the Visual FoxPro bridge.
+ * folder, next to the `.pjx`. Every command that converts a file reads it, so
+ * they all agree about which files are left alone.
  *
  *     # a comment
  *     forms/frm_old.scx          one file, in the forms folder

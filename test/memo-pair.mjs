@@ -30,7 +30,7 @@ if (!tool) {
   process.exit(0)
 }
 
-const work = join(tmpdir(), "opencode", "memotest")
+const work = join(tmpdir(), "vfp-tools", "memotest")
 rmSync(work, { recursive: true, force: true })
 mkdirSync(work, { recursive: true })
 

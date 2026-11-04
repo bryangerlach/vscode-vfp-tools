@@ -893,13 +893,13 @@ if (ghost) {
 
 // A control knows where it sits in the form, and the editor knows which methods
 // that object has. Clicking one asks for them.
-const bridge = typeof acquireVsCodeApi === "function" ? acquireVsCodeApi() : undefined;
-if (bridge) {
+const host = typeof acquireVsCodeApi === "function" ? acquireVsCodeApi() : undefined;
+if (host) {
   document.addEventListener("click", (event) => {
     const at = event.target.closest("[data-path]");
     if (!at) return;
     const section = at.closest("[data-class]");
-    bridge.postMessage({
+    host.postMessage({
       type: "method",
       cls: section ? section.dataset.class || "" : "",
       path: at.dataset.path || "",

@@ -47,7 +47,7 @@ function hasNot(what, text, needle) {
 }
 
 // --- the forms that the test draws --------------------------------------------------
-const work = join(tmpdir(), "opencode", "formtest")
+const work = join(tmpdir(), "vfp-tools", "formtest")
 rmSync(work, { recursive: true, force: true })
 mkdirSync(work, { recursive: true })
 

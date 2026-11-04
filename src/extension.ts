@@ -488,9 +488,8 @@ async function checkProject() {
 /**
  * Opens the exclude list, and writes it first when it is not there.
  *
- * The list is a file in the project folder, so the three things that convert
- * files all read the same one: the extension, the OpenCode plugin and the
- * Visual FoxPro bridge.
+ * The list is a file in the project folder, so every command that converts a
+ * file reads the same one.
  */
 async function editIgnore() {
   const file = ignoreFile(projectRoot())

@@ -39,7 +39,7 @@ function same(what, got, wanted) {
 }
 
 // --- the project that the test goes to ----------------------------------------------
-const work = join(tmpdir(), "opencode", "gototest")
+const work = join(tmpdir(), "vfp-tools", "gototest")
 rmSync(work, { recursive: true, force: true })
 mkdirSync(join(work, "forms"), { recursive: true })
 mkdirSync(join(work, "progs"), { recursive: true })

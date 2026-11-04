@@ -14,13 +14,19 @@ import * as path from "node:path"
  * it was, the text was changed and the binary file has to be built again.
  * When the binary file is not the mark it was, the form was changed in the
  * designer and the text has to catch up.
- *
- * The bridge on the Visual FoxPro side writes the same file, so the two know
- * what the other did.
  */
 
-/** The folder the marker is in. The same one the bridge uses. */
-export function bridgeFolder(): string {
+/** The folder the marker is in. */
+export function stateFolder(): string {
+  const local = process.env.LOCALAPPDATA
+  const app = process.env.APPDATA
+  const temp = process.env.TEMP
+  const root = local || app || temp
+  return root ? path.join(root, "vfp-tools") : path.join(os.tmpdir(), "vfp-tools")
+}
+
+/** The folder the marker was kept in before the extension had a name of its own. */
+function oldStateFolder(): string {
   const local = process.env.LOCALAPPDATA
   const app = process.env.APPDATA
   const temp = process.env.TEMP
@@ -28,22 +34,37 @@ export function bridgeFolder(): string {
   return root ? path.join(root, "opencode", "vfp") : path.join(os.tmpdir(), "opencode", "vfp")
 }
 
-/** The name of the marker file for a project. */
+/**
+ * The name of the marker file for a project.
+ *
+ * A marker that is still in the old folder is copied across the first time it
+ * is asked for, so a project that was marked before keeps its state.
+ */
 export function markerFile(project: string): string {
   const safe = path.basename(project).toLowerCase().replace(/\./g, "_") || "project"
-  return path.join(bridgeFolder(), `sync_${safe}.txt`)
+  const name = `sync_${safe}.txt`
+  const file = path.join(stateFolder(), name)
+  if (!fs.existsSync(file)) {
+    const old = path.join(oldStateFolder(), name)
+    if (fs.existsSync(old)) {
+      try {
+        fs.mkdirSync(path.dirname(file), { recursive: true })
+        fs.copyFileSync(old, file)
+      } catch {
+        /* the old marker is only copied when it can be */
+      }
+    }
+  }
+  return file
 }
 
 /**
  * The mark of a file: its size, the day it was written and the second of that
  * day.
  *
- * The bridge writes the mark in the same way, so the two can read each
- * other's file. Two things about this Visual FoxPro are worth knowing:
- *
- *   * DTOS() gives the day as YYYYMMDD, without the dashes.
- *   * ADIR() gives the time of a file rounded up to the next even second, so
- *     the mark is made the same way here.
+ * The day is written as YYYYMMDD, without the dashes, and the time is rounded
+ * up to the next even second, the way Visual FoxPro records file times, so the
+ * mark does not change with the part of a second the file system adds.
  */
 export function fingerprint(file: string): string {
   try {
@@ -87,7 +108,7 @@ export function readMarker(file: string): Map<string, Marked> {
     if (!entry) continue
     const parts = entry.split("|")
     if (parts.length < 3) continue
-    // The bridge ends every entry with a semicolon.
+    // Every entry ends with a semicolon.
     marked.set(parts[0].toLowerCase(), {
       text: parts[1].trim(),
       binary: parts[2].replace(/;$/, "").trim(),
@@ -99,8 +120,8 @@ export function readMarker(file: string): Map<string, Marked> {
 /**
  * Writes the marker.
  *
- * The whole file is written again, because the bridge writes it as well and
- * the two have to agree.
+ * The whole file is written again, because the mark of one pair can change
+ * without the others changing at all.
  */
 export function writeMarker(file: string, marked: Map<string, Marked>): void {
   const lines: string[] = []
