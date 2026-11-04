@@ -10,7 +10,7 @@ import {
   toBinary,
   toText,
 } from "./foxbin"
-import { findVfp, ideIsRunning, openCommand, runInIde, runProgram } from "./vfp"
+import { findVfp, ideIsRunning, openCommand, runInIde, runProgram, startProgram } from "./vfp"
 import { VfpEntry, VfpNode, VfpTree } from "./tree"
 import { markAll, markPair, markerFile, readMarker, stateOf } from "./marker"
 import { IGNORE_NAME, ignoreFile, readIgnore, starterIgnore } from "./ignore"
@@ -105,6 +105,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("vfp.buildProject", guard(() => buildProject())),
+    vscode.commands.registerCommand("vfp.runProgram", guard((file?: vscode.Uri | VfpNode) => runProgramFile(file))),
     vscode.commands.registerCommand("vfp.rebuildBinaries", guard(() => rebuildBinaries())),
     vscode.commands.registerCommand("vfp.rebuildText", guard(() => rebuildText())),
     vscode.commands.registerCommand("vfp.syncProject", guard(() => syncProject())),
@@ -705,6 +706,46 @@ async function buildProject() {
   refreshStatus()
 }
 
+/** Runs a Visual FoxPro program. */
+async function runProgramFile(file?: vscode.Uri | VfpNode) {
+  const target = fileOf(file)
+  if (!target) {
+    void vscode.window.showErrorMessage("There is no program to run.")
+    return
+  }
+  if (path.extname(target).toLowerCase() !== ".prg") {
+    void vscode.window.showErrorMessage(
+      `${path.basename(target)} is not a program. Only a .prg file can be run.`,
+    )
+    return
+  }
+
+  // Visual FoxPro compiles the file that is on disk, so a file that was just
+  // changed is saved before it is run.
+  const open = vscode.workspace.textDocuments.find(
+    (document) => document.uri.fsPath.toLowerCase() === target.toLowerCase(),
+  )
+  if (open?.isDirty) await open.save()
+
+  const vfp = findVfp(vscode.workspace.getConfiguration("vfp").get<string>("vfpExe", ""))
+  if (!vfp) {
+    void vscode.window.showErrorMessage("Visual FoxPro was not found.")
+    return
+  }
+
+  // The program runs in the folder of the project, so the paths in it are the
+  // ones the user means. A program that only writes a file is done in a
+  // moment, and a program that opens a form stays until the form is closed.
+  const folder = workspace().project?.root ?? path.dirname(target)
+  const result = startProgram(vfp, target, folder)
+  if (result.ok) {
+    output.appendLine(`running ${path.basename(target)} in ${folder}`)
+  } else {
+    output.appendLine(`could not run ${path.basename(target)}: ${result.error ?? ""}`)
+    void vscode.window.showErrorMessage("Visual FoxPro could not be started. The log says why.")
+  }
+}
+
 /** Opens a file in the Visual FoxPro IDE. */
 async function openInIde(file?: vscode.Uri | VfpNode) {
   const target = fileOf(file)
@@ -818,6 +859,10 @@ async function showMenu() {
       label: "$(check) Show what is out of step",
       description: state.toRefresh.length ? `${state.toRefresh.length} behind` : "",
       command: "vfp.checkProject",
+    },
+    {
+      label: "$(play) Run the program in the editor",
+      command: "vfp.runProgram",
     },
     {
       label: "$(gear) Build the project",

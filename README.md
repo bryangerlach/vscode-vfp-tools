@@ -26,6 +26,7 @@ codium --install-extension vfp-tools-<version>.vsix
 | **VFP: Open a file as text** | Turns a `.scx`, `.vcx`, `.frx`, `.mnx`, `.lbx` or `.pjx` file into the matching `.SC2`, `.VC2`, `.FR2`, `.MN2`, `.LB2` or `.PJ2` file and gives the path of it. The file stays open for the session, so it is not turned into text again. |
 | **VFP: Close a file** | Turns the text file back into the binary file, so the changes are in the form or the report again. |
 | **VFP: Build the project** | Builds the binary files whose text was changed, and then runs the program that builds the project. |
+| **VFP: Run the program** | Runs the `.prg` file in the editor, or the one that was right-clicked, in a Visual FoxPro of its own. The file is saved first, and the program runs in the folder of the project. |
 | **VFP: Put everything in step** | Builds what the text files changed, makes the text files that are behind, and makes the text files that are not there yet. |
 | **VFP: Rebuild the binary files from the text files** | Builds every binary file again from its text file, whether or not it is out of step. |
 | **VFP: Rebuild the text files from the binary files** | Makes the text file of every binary file that is behind, and of every binary file that has no text file yet. |
@@ -354,6 +355,8 @@ node test/scratch.mjs       && does a scratch folder that Windows will not let
                               answering while it waits?
 node test/build.mjs         && does a build start Visual FoxPro, run the program
                               and close it again?
+node test/run.mjs           && does a program start in a Visual FoxPro of its
+                              own, in the folder of the project?
 node test/marker.mjs        && does the marker agree about which side changed?
 node test/form.mjs          && is a form read and drawn right: captions,
                               positions, colours, grids, hidden controls, and

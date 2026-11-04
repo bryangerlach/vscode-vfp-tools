@@ -1,6 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
-import { execFileSync, spawnSync } from "node:child_process"
+import { execFileSync, spawn, spawnSync } from "node:child_process"
 import { tmpdir } from "node:os"
 import { removeFile, removeFileNow, sweepScratchRoot } from "./scratch"
 
@@ -230,6 +230,38 @@ export function runProgram(vfp: string, program: string, folder: string): IdeRes
     // Visual FoxPro compiles the wrapper that is run, and it leaves the
     // compiled one behind.
     void removeFile(wrapper.replace(/\.prg$/i, ".fxp"))
+  }
+}
+
+/**
+ * Runs a program in a Visual FoxPro of its own, and does not wait for it.
+ *
+ * A build ends by itself, so runProgram can wait for it. A program that opens
+ * a form waits for the user, and the editor must not wait with it, so this one
+ * is started and left alone.
+ *
+ * The program runs in the folder of the project, so the paths in it are the
+ * ones the user means, and Visual FoxPro is given a configuration file of its
+ * own, so that it does not open the project it was left with.
+ */
+export function startProgram(vfp: string, program: string, folder: string): IdeResult {
+  const stamp = Date.now()
+  const home = join(tmpdir(), "vfp-tools")
+  const config = join(home, `run_${stamp}.fpw`)
+  mkdirSync(home, { recursive: true })
+  void sweepScratchRoot(home)
+  try {
+    writeFileSync(config, "RESOURCE = OFF\r\n", "latin1")
+    const child = spawn(vfp, [`-C${config}`, program], {
+      cwd: folder,
+      detached: true,
+      stdio: "ignore",
+      windowsHide: true,
+    })
+    child.unref()
+    return { ok: true }
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
 

@@ -113,6 +113,12 @@
         "icon": "$(gear)"
       },
       {
+        "command": "vfp.runProgram",
+        "title": "Run the program",
+        "category": "VFP",
+        "icon": "$(play)"
+      },
+      {
         "command": "vfp.rebuildBinaries",
         "title": "Rebuild the binary files from the text files",
         "category": "VFP",
@@ -217,6 +223,10 @@
         {
           "command": "vfp.openInIde",
           "when": "resourceExtname =~ /^\\.(prg|sc2|vc2|fr2|mn2|lb2|pj2)$/i"
+        },
+        {
+          "command": "vfp.runProgram",
+          "when": "resourceExtname =~ /^\\.prg$/i"
         },
         {
           "command": "vfp.rebuildOne",
@@ -349,8 +359,13 @@
           "group": "vfp@6"
         },
         {
+          "command": "vfp.runProgram",
+          "group": "vfp@7",
+          "when": "resourceExtname =~ /^\\.prg$/i"
+        },
+        {
           "command": "vfp.buildProject",
-          "group": "vfp@7"
+          "group": "vfp@8"
         }
       ],
       "explorer/context": [
@@ -383,8 +398,13 @@
           "group": "vfp@6"
         },
         {
+          "command": "vfp.runProgram",
+          "group": "vfp@7",
+          "when": "resourceExtname =~ /^\\.prg$/i"
+        },
+        {
           "command": "vfp.buildProject",
-          "group": "vfp@7"
+          "group": "vfp@8"
         }
       ]
     },
