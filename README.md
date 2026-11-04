@@ -272,7 +272,7 @@ any of that. It runs the program and reports whether it succeeded.
 
 ## A word about FoxBin2Prg
 
-The conversion is done by [FoxBin2Prg](https://github.com/rickyz/FoxBin2Prg),
+The conversion is done by [FoxBin2Prg](https://github.com/fdbozzo/foxbin2prg),
 by Fernando D. Bozzo. It does something that is worth knowing about: it does
 not read the code of a form from the text file, it **recompiles** the form to
 get at the code, and it writes the recompiled form back to disk.
