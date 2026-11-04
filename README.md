@@ -7,16 +7,19 @@ text and back again.
 
 ## Installing it
 
-Build a `.vsix` and install it, or install the packaged file if a release has
-one:
+Download `vfp-tools-<version>.vsix` from the [latest
+release](https://github.com/bryangerlach/vscode-vfp-tools/releases/latest) and
+install it:
 
 ```
-npm install
-npx vsce package --skip-license
 codium --install-extension vfp-tools-<version>.vsix
 ```
 
-`code --install-extension` does the same in Visual Studio Code.
+`code --install-extension` does the same in Visual Studio Code. In either
+editor, **Extensions** → **...** → **Install from VSIX** works as well. Reload
+the window after it is installed.
+
+To build the `.vsix` yourself, see [Building it](#building-it).
 
 ## What it does
 
@@ -341,6 +344,34 @@ npx vsce package --skip-license
 ```
 
 and then install it with `codium --install-extension vfp-tools-<version>.vsix`.
+
+## Releasing
+
+A tag makes a release. The workflow in `.github/workflows/release.yml` builds
+the `.vsix` and attaches it to a GitHub Release named after the tag.
+
+1. Bump the version in `package.json`, and in `package-lock.json` with it:
+
+   ```
+   npm version patch --no-git-tag-version
+   ```
+
+2. Commit the change and push it.
+
+3. Make a tag with the same version and push it:
+
+   ```
+   git tag v1.6.2
+   git push origin v1.6.2
+   ```
+
+The workflow reads the version from `package.json` and stops if the tag does
+not match it, so the name of the file and the version inside it always agree.
+When it passes, the release is at
+`https://github.com/bryangerlach/vscode-vfp-tools/releases`.
+
+The Marketplace is not used: the `.vsix` on the release is what people install,
+and that is the same file for VSCodium and for Visual Studio Code.
 
 ## The tests
 

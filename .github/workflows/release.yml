@@ -1,0 +1,59 @@
+name: Release
+
+# A tag is the release. Bump the version in package.json, commit, then push a
+# tag with the same version: v1.6.1 for version 1.6.1.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Get Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install the packages
+        run: npm ci
+
+      - name: Read the version
+        id: version
+        shell: bash
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "number=$version" >> "$GITHUB_OUTPUT"
+
+      # A tag that does not match the manifest would publish a file with one
+      # version in its name and another inside it.
+      - name: Check the tag
+        shell: bash
+        run: |
+          if [ "$GITHUB_REF_NAME" != "v${{ steps.version.outputs.number }}" ]; then
+            echo "The tag $GITHUB_REF_NAME does not match version ${{ steps.version.outputs.number }}."
+            echo "Bump the version in package.json, or tag v${{ steps.version.outputs.number }}."
+            exit 1
+          fi
+
+      - name: Build the extension
+        run: npx --yes @vscode/vsce@3 package
+
+      - name: Make the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "vfp-tools-${{ steps.version.outputs.number }}.vsix" \
+            --verify-tag \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes
