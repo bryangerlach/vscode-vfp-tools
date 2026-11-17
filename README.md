@@ -345,6 +345,43 @@ npx vsce package --skip-license
 
 and then install it with `codium --install-extension vfp-tools-<version>.vsix`.
 
+## From a terminal, or from an agent
+
+The same work is available without the editor, which is what lets an agent do
+it instead of asking for a button to be pressed. In this folder, once:
+
+```
+npm link
+```
+
+That puts `vfp-tools` on the path, and it can then be run in any project:
+
+```
+vfp-tools status
+vfp-tools build forms/frm_customer.SC2
+vfp-tools open  forms/frm_customer.scx
+vfp-tools sync
+vfp-tools refresh
+vfp-tools resolve
+vfp-tools build-project
+vfp-tools run   main.prg
+```
+
+`vfp-tools --help` lists them. It reads `.vscode/settings.json` for
+`vfp.projectFile`, `vfp.foxbin2prg`, `vfp.buildProgram` and `vfp.vfpExe`, and it
+uses the same `.vfpignore`, the same marker file and the same "the text file is
+the master" rule as the extension. `vfp-tools status --json` prints the state in
+a form a program can read.
+
+Without `npm link`, run it as `node <this folder>/out/cli.js ...`.
+
+### Telling an agent about the project
+
+An `AGENTS.md` at the root of the project is what OpenCode reads automatically.
+It is the place for the rules that are easy to forget, and it should say that
+the text files are the master and that `vfp-tools` builds the binary files. A
+short file is enough; the command finds the project and its settings itself.
+
 ## Releasing
 
 A tag makes a release. The workflow in `.github/workflows/release.yml` builds
@@ -399,6 +436,8 @@ node test/goto.mjs          && does a name go to its code: DO, SET PROCEDURE,
                               class library?
 node test/ignore.mjs        && does the extension leave alone every file that
                               .vfpignore names, and only those?
+node test/cli.mjs           && does the terminal command read the project, say
+                              what is out of step, and refuse what it should?
 node test/installed.mjs     && is the extension in place, with all of its
                               commands and its grammar?
 ```

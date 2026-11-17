@@ -43,6 +43,9 @@
     "workspaceContains:**/*.pj2"
   ],
   "main": "./out/extension.js",
+  "bin": {
+    "vfp-tools": "./out/cli.js"
+  },
   "contributes": {
     "languages": [
       {
